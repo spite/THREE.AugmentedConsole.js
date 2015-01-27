@@ -70,6 +70,15 @@
 
 	} );
 
+	addSupportedType( THREE.Ray, function( v ) {
+
+		return { 
+			'Ray origin': { x: v.origin.x, y: v.origin.y, z: v.origin.z },
+			'Ray direction': { x: v.direction.x, y: v.direction.y, z: v.direction.z }
+		};
+
+	} );
+
 	console.log = function() {
 
 		var special = false;

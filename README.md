@@ -9,6 +9,7 @@ The supported types are
 * THREE.Vector2, THREE.Vector3, THREE.Vector4
 * THREE.Matrix3, THREE.Matrix4
 * THREE.Euler
+* THREE.Ray
 
 #####Demo
 
