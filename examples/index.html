@@ -8,7 +8,7 @@
 			*{ margin: 0; padding: 0; box-sizing: border-box; }
 			body { font-family: 'roboto condensed', sans-serif; color: #eee; font-size: 13px; font-weight: 100;}
 			canvas { position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 100% }
-			#about{ position: absolute; left: 30px; top: 30px; z-index: 10; width: 600px;}
+			#about{ position: absolute; left: 30px; top: 30px; z-index: 10; right: 30px;}
 			#about h1{ margin-bottom: 1em;}
 			#about p{ margin-bottom: 1em; line-height: 1.4em;}
 			#about ul{ margin-left: 1.5em;}
@@ -20,15 +20,20 @@
 	</head>
 	<body>
 		<div id="about">
-			<h1>THREE.AugmentedConsole.js</h1>
-			<p>This is a demo of <a class="clickable" href="https://github.com/spite/THREE.AugmentedConsole.js" >THREE.AugmentedConsole.js</a>, a small library to help work with three.js.</p>
-			<p>It uses chrome's console.table to format the output when using console.log to inspect objects. If the object is a known format it uses a table to display its contents.</p>
-			<p>The supported types are <ul><li>THREE.Vector2, THREE.Vector3, THREE.Vector4</li><li>THREE.Matrix3, THREE.Matrix4</li><li>THREE.Euler</li><li>THREE.Ray</li></ul></p>
-			<p><b>How to use:</b> Open the console and type <code>console.log( camera.position )</code>, <code>console.log( cube.matrixWorld )</code> or <code>console.log( cube.rotation )</code> (<i>hint: you can click these commands</i>).</p>
-			<p><b>Support:</b> Chrome and Firefox. Safari does support console.table but doesn't seem to format anything.</p>
+			<h1>THREE.AugmentedConsole.js v2</h1>
+			<p><b>Chrome only!</b> Firefox will work if this ticket is fixed: <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1134512" >https://bugzilla.mozilla.org/show_bug.cgi?id=1134512</a>.</p>
+			<p>How to use it:<br/>Open your console and type <code>console.log( cube.material )</code> or <code>console.log( new THREE.MeshNormalMaterial() )</code>.</p>
+			<p>Try modifying cube.material properties and console.log the material again.</p>
+			<p>Here are some examples:</p>
+			<p><ul>
+				<li><code>cube.material.shininess = 10 + Math.random() * 100; console.log( cube.material )</code></li>
+				<li><code>cube.material.color.setRGB( .5 + .5 * Math.random(), .5 + .5 * Math.random(), .5 + .5 * Math.random() ); console.log( cube.material )</code></li>
+				<li><code>var s = Math.random(); cube.material.normalScale.set( s, s ); console.log( cube.material )</code></li>
+			</ul></p>
+			<p>Hint: You can also click on these commands to run them on the console.</p>
 		</div>
 
-		<a href="https://github.com/spite/THREE.AugmentedConsole.js"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 10" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+		<!--<a href="https://github.com/spite/THREE.AugmentedConsole.js"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 10" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>-->
 
 		<script src="three.min.js"></script>
 		<script src="../src/THREE.AugmentedConsole.js"></script>
@@ -40,11 +45,46 @@
 			var renderer = new THREE.WebGLRenderer( { antialias: true });
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
+			renderer.setClearColor( 0x202020 );
 
 			var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 			var material = new THREE.MeshNormalMaterial();
+			var material = new THREE.MeshPhongMaterial( { 
+				map: THREE.ImageUtils.loadTexture( 'diffuse2.jpg' ), 
+				normalMap: THREE.ImageUtils.loadTexture( 'normal2.jpg' ), 
+				specularMap: THREE.ImageUtils.loadTexture( 'specular2.jpg' ), 
+				color: 0xb70000, 
+				specular: 0xffffff, 
+				shininess: 10 
+			} );
 			var cube = new THREE.Mesh( geometry, material );
 			scene.add( cube );
+
+			var ambient = new THREE.AmbientLight( 0x444444 );
+			scene.add( ambient );
+
+			light = new THREE.SpotLight( 0xffffff, 5, 0, Math.PI / 2, 1 );
+			light.position.set( 1000, 1500, 100 );
+			light.target.position.set( 0, 0, 0 );
+
+			light.castShadow = true;
+
+			light.shadowCameraNear = 1200;
+			light.shadowCameraFar = 2500;
+			light.shadowCameraFov = 20;
+
+			//light.shadowCameraVisible = true;
+
+			light.shadowBias = 0.0001;
+			light.shadowDarkness = 0.5;
+
+			light.shadowMapWidth = 1024;
+			light.shadowMapHeight = 1024;
+
+			scene.add( light ); 
+
+			renderer.shadowMapEnabled = true;
+			renderer.shadowMapType = THREE.PCFShadowMap;
 
 			camera.position.z = 5;
 

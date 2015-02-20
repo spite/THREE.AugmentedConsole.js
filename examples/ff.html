@@ -1,0 +1,28 @@
+<script>
+
+function getBox(width, height) {
+	return {
+		string: "Pretty logs",
+		style: "font-size: 1px; padding: " + Math.floor(height/2) + "px " + Math.floor(width/2) + "px; line-height: " + height + "px;"
+	}
+}
+
+console.image = function(url, scale) {
+	
+	scale = scale || 1;
+	var img = new Image();
+
+	img.onload = function() {
+		var dim = getBox(this.width * scale, this.height * scale);
+		//console.log("%c" + dim.string, dim.style + "background: url(" + url + "); background-size: " + (this.width * scale) + "px " + (this.height * scale) + "px; color: transparent;border: 1px solid red");
+
+		console.log( "%c.", "background-image: url(https://mozorg.cdn.mozilla.net/media/img/firefox/desktop/index/animations/firefox-logo.bee1d85af18f.png); background-size: cover; border: 1px solid red; width: 512px; height: 532px; padding: 128px; line-height: 256px" );
+
+	};
+
+	img.src = url;
+};
+
+console.image( 'diffuse.jpg', .25 );
+
+</script>
