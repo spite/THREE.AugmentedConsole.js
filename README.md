@@ -11,22 +11,22 @@ The supported types are
 * THREE.Euler
 * THREE.Ray
 
-#####Demo
+##### Demo
 
 Here's a [demo showing how it works](http://www.clicktorelease.com/tools/augmented-console/)
 
-#####Snapshots
+##### Snapshots
 Chrome
 ![Chrome](http://www.clicktorelease.com/tools/augmented-console/chrome-augmented-console.jpg "The output on Chrome")
 Firefox
 ![Firefox](http://www.clicktorelease.com/tools/augmented-console/firefox-augmented-console.jpg "The output of Firefox")
 
-#####How to use
+##### How to use
 Include the script file in your three.js project and the console will be automatically augmented
 
     <script src="THREE.AugmentedConsole.js"></script>
 
-#####Support
+##### Support
 Chrome and Firefox. Safari does support console.table but doesn't seem to format anything.
 
 Check more stuff here: [clicktorelease.com](http://www.clicktorelease.com) and [twitter](http://twitter.com/thespite).
