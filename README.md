@@ -27,7 +27,7 @@ Include the script file in your three.js project and the console will be automat
     <script src="THREE.AugmentedConsole.js"></script>
 
 ##### Support
-Chromem, Firefox, and Safari.
+Chrome, Firefox, and Safari.
 
 Check more stuff here: [clicktorelease.com](http://www.clicktorelease.com) and [twitter](http://twitter.com/thespite).
 
