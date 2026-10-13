@@ -4,6 +4,8 @@ THREE.AugmentedConsole.js is a small tool to make development with three.js easi
 
 It augments console.log: when what you log is something of three.js, its contents are added after the line as a table, a color as a swatch, and a texture or a material as a picture.
 
+[![npm](https://img.shields.io/npm/v/three.augmented-console.svg)](https://www.npmjs.com/package/three.augmented-console)
+
 ##### Demos
 
 - **[What it does, explained](https://spite.github.io/THREE.AugmentedConsole.js/)**: every type, with the code and what the library adds to the console for it, running in the page
@@ -26,12 +28,16 @@ The library has been updated for current three.js. What changed from the 2015 ve
 - you can add your own types, and there's ```uninstall()``` to get the console back
 
 ##### How to use
-Import the module in your three.js project and the console will be automatically augmented
+Use npm to install it
+```
+npm i three.augmented-console
+```
+and import it in your three.js project. The console will be automatically augmented
 
 ```js
-import './THREE.AugmentedConsole.js';
+import 'three.augmented-console';
 ```
-It's a single file with no dependencies, [src/THREE.AugmentedConsole.js](src/THREE.AugmentedConsole.js), not even three.js. From then on:
+It's a single file with no dependencies, [src/THREE.AugmentedConsole.js](src/THREE.AugmentedConsole.js), not even three.js, so it also works without npm or a bundler: copy it and import it by its path. From then on:
 
 ```js
 console.log( camera.position );
@@ -99,8 +105,8 @@ Nothing is computed or updated to show them. The world position of an object is 
 A material is shown as a table of its values. Import a second module to see a picture of it too. This one does need three.js, r155 or later, as `three` in your import map or bundler:
 
 ```js
-import './THREE.AugmentedConsole.js';
-import './THREE.AugmentedConsole.materials.js';
+import 'three.augmented-console';
+import 'three.augmented-console/materials';
 ```
 From then on, logging a material also adds a picture of a sphere with that material, as it is at that moment:
 
@@ -113,7 +119,7 @@ The sphere is rendered in a small scene of its own, with a couple of lights and 
 The same module shows what a render target has, if you give it the renderer that can read it. The picture shows the linear values of the target the way the screen would, and works for the targets that are RGBA, in bytes, half floats or floats:
 
 ```js
-import { setRenderer } from './THREE.AugmentedConsole.materials.js';
+import { setRenderer } from 'three.augmented-console/materials';
 
 setRenderer( renderer );
 
@@ -123,7 +129,7 @@ console.log( renderTarget );
 The pictures are logged as the background of a line, which is all that a console allows. ```renderMaterial( material )``` returns the picture of a material as a data URL, to use it somewhere else, and ```dispose()``` releases the renderer that makes them:
 
 ```js
-import { renderMaterial, dispose } from './THREE.AugmentedConsole.materials.js';
+import { renderMaterial, dispose } from 'three.augmented-console/materials';
 
 image.src = renderMaterial( mesh.material );
 ```
@@ -132,7 +138,7 @@ image.src = renderMaterial( mesh.material );
 To add a type, pass a function that tells if a value is of that type, and one that returns what ```console.table``` should show for it:
 
 ```js
-import { addSupportedType } from './THREE.AugmentedConsole.js';
+import { addSupportedType } from 'three.augmented-console';
 
 addSupportedType(
   v => v instanceof Particle,
@@ -146,7 +152,7 @@ For something other than a table, ```addHandler``` takes the same test as ```add
 To stop augmenting the console, and to start again:
 
 ```js
-import { install, uninstall } from './THREE.AugmentedConsole.js';
+import { install, uninstall } from 'three.augmented-console';
 
 uninstall();
 install();

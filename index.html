@@ -53,13 +53,15 @@
 	<p class="buttons">
 		<a class="button primary" href="examples/">Open the demo</a>
 		<a class="button" href="https://github.com/spite/THREE.AugmentedConsole.js">GitHub</a>
+		<a class="button" href="https://www.npmjs.com/package/three.augmented-console">npm</a>
 	</p>
 	<p class="note">Every example in this page is running: under each piece of code there is what the library adds to the console for it. Open the console to see it there. The <a href="examples/">demo</a> has a scene and all the commands to click.</p>
 
 	<h2>How to use</h2>
 	<p>Import the module in your three.js project, and the console is augmented. It's a single file with no dependencies, not even three.js: <a href="https://github.com/spite/THREE.AugmentedConsole.js/blob/master/src/THREE.AugmentedConsole.js">src/THREE.AugmentedConsole.js</a>.</p>
-	<pre><code>import './THREE.AugmentedConsole.js';</code></pre>
-	<p>From then on, <code>console.log</code>, <code>console.info</code> and <code>console.debug</code> show more. The line is logged as you wrote it, and what the library adds comes after it. What it doesn't know is left as it is.</p>
+	<pre><code>npm i three.augmented-console</code></pre>
+	<pre><code>import 'three.augmented-console';</code></pre>
+	<p>Without npm or a bundler, copy the file and import it by its path. From then on, <code>console.log</code>, <code>console.info</code> and <code>console.debug</code> show more. The line is logged as you wrote it, and what the library adds comes after it. What it doesn't know is left as it is.</p>
 	<p>The things you log from the console of the browser have to be reachable from there. The variables of a module are not, so put the ones you want to inspect in <code>window</code>:</p>
 	<pre><code>Object.assign( window, { THREE, scene, camera } );</code></pre>
 
@@ -140,8 +142,8 @@
 
 	<h2>Pictures of materials and render targets</h2>
 	<p>A second module adds pictures that need three.js to be made. Import it after the first one. It needs three.js r155 or later, as <code>three</code> in your import map or bundler.</p>
-	<pre><code>import './THREE.AugmentedConsole.js';
-import { setRenderer } from './THREE.AugmentedConsole.materials.js';</code></pre>
+	<pre><code>import 'three.augmented-console';
+import { setRenderer } from 'three.augmented-console/materials';</code></pre>
 	<p>With it, a material also shows a picture of a sphere that has it, as the material is at that moment. Change something, log it again, and see what it did.</p>
 	<pre class="run" data-pictures><code>console.log( cube.material );</code></pre>
 	<pre class="run" data-pictures><code>cube.material.shininess = 100;
@@ -156,7 +158,7 @@ console.log( target );</code></pre>
 
 	<h2>Your own types</h2>
 	<p>To add a type, pass a function that tells if a value is of that type, and one that returns what <code>console.table</code> should show for it:</p>
-	<pre><code>import { addSupportedType } from './THREE.AugmentedConsole.js';
+	<pre><code>import { addSupportedType } from 'three.augmented-console';
 
 addSupportedType(
   v => v instanceof Particle,
@@ -166,7 +168,7 @@ addSupportedType(
 
 	<h2>Removing it</h2>
 	<p>It's a tool for development, not something to ship with your page. To stop augmenting the console, and to start again:</p>
-	<pre><code>import { install, uninstall } from './THREE.AugmentedConsole.js';
+	<pre><code>import { install, uninstall } from 'three.augmented-console';
 
 uninstall();
 install();</code></pre>
