@@ -1,0 +1,41 @@
+{
+  "name": "three.augmented-console",
+  "version": "1.0.0",
+  "description": "Shows the vectors, matrices and materials of three.js as tables and pictures when they are logged to the console",
+  "type": "module",
+  "main": "src/THREE.AugmentedConsole.js",
+  "module": "src/THREE.AugmentedConsole.js",
+  "exports": {
+    ".": "./src/THREE.AugmentedConsole.js",
+    "./materials": "./src/THREE.AugmentedConsole.materials.js"
+  },
+  "files": [
+    "src"
+  ],
+  "peerDependencies": {
+    "three": ">=0.155.0"
+  },
+  "peerDependenciesMeta": {
+    "three": {
+      "optional": true
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spite/THREE.AugmentedConsole.js.git"
+  },
+  "keywords": [
+    "three",
+    "threejs",
+    "console",
+    "debug",
+    "console.table",
+    "devtools"
+  ],
+  "author": "Jaume Sanchez <the.spite@gmail.com> (https://www.clicktorelease.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/spite/THREE.AugmentedConsole.js/issues"
+  },
+  "homepage": "https://spite.github.io/THREE.AugmentedConsole.js/"
+}

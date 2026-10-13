@@ -1,83 +1,190 @@
-<html>
+<!doctype html>
+<html lang="en">
 	<head>
-		<meta charset='utf-8' />
+		<meta charset="utf-8">
 		<title>THREE.AugmentedConsole.js</title>
-		<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700' rel='stylesheet' type='text/css'>
-		<link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<style>
 			*{ margin: 0; padding: 0; box-sizing: border-box; }
-			body { font-family: 'roboto condensed', sans-serif; color: #eee; font-size: 13px; font-weight: 100;}
-			canvas { position: absolute; left: 0; top: 0; right: 0; bottom: 0; width: 100%; height: 100% }
-			#about{ position: absolute; left: 30px; top: 30px; z-index: 10; width: 600px;}
-			#about h1{ margin-bottom: 1em;}
-			#about p{ margin-bottom: 1em; line-height: 1.4em;}
-			#about ul{ margin-left: 1.5em;}
-			.clickable{ cursor: pointer;}
-			a{ color: inherit;}
-			.clickable:hover{ color: white;}
-			code{ font-family: Inconsolata; color: #b7dede;}
+			html{ color-scheme: dark; }
+			body{ font-family: system-ui, sans-serif; color: #eee; background: #000; font-size: 14px; overflow: hidden; }
+			canvas{ position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+			#about{ position: absolute; left: 30px; top: 30px; z-index: 10; width: min( 520px, calc( 100% - 60px ) ); max-height: calc( 100% - 60px ); overflow: auto; }
+			#about h1{ font-size: 22px; font-weight: 400; margin-bottom: .8em; }
+			#about p{ margin-bottom: 1em; line-height: 1.4em; }
+			#about ul{ margin: 0 0 1em 1.5em; line-height: 1.5em; }
+			a{ color: inherit; }
+			code{ font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; color: #b7dede; }
+			code.clickable{ cursor: pointer; display: block; padding: 2px 0; }
+			code.clickable:hover{ color: #fff; }
+			#output{ position: absolute; right: 30px; bottom: 30px; z-index: 10; width: min( 520px, calc( 100% - 60px ) ); max-height: 50%; overflow: auto; background: rgba( 20, 20, 20, .85 ); border: 1px solid #333; border-radius: 6px; padding: 12px; }
+			#output:empty{ display: none; }
+			#output > p:first-child{ color: #b7dede; }
+			#about h2{ font-size: 14px; font-weight: 700; margin: 1.2em 0 .5em; }
 		</style>
+		<script type="importmap">
+		{
+			"imports": {
+				"three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js"
+			}
+		}
+		</script>
 	</head>
 	<body>
 		<div id="about">
 			<h1>THREE.AugmentedConsole.js</h1>
-			<p>This is a demo of <a class="clickable" href="https://github.com/spite/THREE.AugmentedConsole.js" >THREE.AugmentedConsole.js</a>, a small library to help work with three.js.</p>
-			<p>It uses chrome's console.table to format the output when using console.log to inspect objects. If the object is a known format it uses a table to display its contents.</p>
-			<p>The supported types are <ul><li>THREE.Vector2, THREE.Vector3, THREE.Vector4</li><li>THREE.Matrix3, THREE.Matrix4</li><li>THREE.Euler</li><li>THREE.Ray</li></ul></p>
-			<p><b>How to use:</b> Open the console and type <code>console.log( camera.position )</code>, <code>console.log( cube.matrixWorld )</code> or <code>console.log( cube.rotation )</code> (<i>hint: you can click these commands</i>).</p>
-			<p><b>Support:</b> Chrome, Firefox, and Safari.</p>
+			<p>This is a demo of <a href="https://github.com/spite/THREE.AugmentedConsole.js">THREE.AugmentedConsole.js</a>, a small library to help work with three.js.</p>
+			<p>It augments <code>console.log</code>: if what you log is of a known type, its contents are also shown as a table, a color as a swatch, a texture as its picture, and a material as a picture of a sphere that has it.</p>
+			<p><a href="../">What it does, explained</a></p>
+			<p><b>How to use:</b> open the console and type, or click, any of these. What the library adds to the console is copied at the bottom right, to see it without opening it.</p>
+			<h2>Vectors, matrices and friends</h2>
+			<p class="commands">
+				<code>console.log( camera.position )</code>
+				<code>console.log( cube.matrixWorld )</code>
+				<code>console.log( cube.rotation )</code>
+				<code>console.log( cube.quaternion )</code>
+				<code>console.log( cube.material.color )</code>
+				<code>console.log( 'box', new THREE.Box3().setFromObject( cube ) )</code>
+				<code>console.log( raycaster.ray )</code>
+				<code>console.log( new THREE.Spherical().setFromVector3( camera.position ) )</code>
+				<code>console.log( new THREE.Frustum().setFromProjectionMatrix( camera.projectionMatrix ) )</code>
+				<code>console.log( raycaster )</code>
+				<code>console.log( new THREE.CatmullRomCurve3( [ new THREE.Vector3( - 1, 0, 0 ), new THREE.Vector3( 0, 1, 0 ), new THREE.Vector3( 1, 0, 0 ) ] ) )</code>
+			</p>
+			<h2>Lists</h2>
+			<p class="commands">
+				<code>console.log( raycaster.intersectObjects( scene.children ) )</code>
+				<code>console.log( [ camera.position, cube.position, light.position ] )</code>
+				<code>console.log( [ new THREE.Color( 0xed6a5a ), new THREE.Color( 0xf4f1bb ), new THREE.Color( 0x9bc1bc ), new THREE.Color( 0x5ca4a9 ) ] )</code>
+			</p>
+			<h2>Objects</h2>
+			<p class="commands">
+				<code>console.log( cube )</code>
+				<code>console.log( camera )</code>
+				<code>console.log( light )</code>
+				<code>console.log( scene )</code>
+				<code>console.log( scene.fog )</code>
+				<code>console.log( cube.geometry )</code>
+				<code>console.log( cube.geometry.attributes.position )</code>
+				<code>console.log( cube.material.map )</code>
+				<code>console.log( renderer )</code>
+				<code>console.log( target )</code>
+				<code>console.log( clip )</code>
+			</p>
+			<h2>Materials</h2>
+			<p class="commands">
+				<code>console.log( cube.material )</code>
+				<code>cube.material.shininess = 10 + Math.random() * 100; console.log( cube.material )</code>
+				<code>cube.material.color.setRGB( .5 + .5 * Math.random(), .5 + .5 * Math.random(), .5 + .5 * Math.random() ); console.log( cube.material )</code>
+				<code>var s = Math.random(); cube.material.normalScale.set( s, s ); console.log( cube.material )</code>
+				<code>console.log( new THREE.MeshNormalMaterial() )</code>
+				<code>console.log( new THREE.MeshStandardMaterial( { color: 0xffb400, metalness: 1, roughness: .25 } ) )</code>
+				<code>console.log( { time: { value: 1.5 }, tint: { value: new THREE.Color( 0xfe5f55 ) }, offset: { value: new THREE.Vector2( .5, .25 ) }, map: { value: cube.material.map } } )</code>
+			</p>
+			<p><code>THREE</code>, <code>scene</code>, <code>camera</code>, <code>cube</code>, <code>light</code>, <code>raycaster</code>, <code>renderer</code>, <code>target</code> and <code>clip</code> are there for you in the console.</p>
 		</div>
+		<div id="output"></div>
 
-		<a href="https://github.com/spite/THREE.AugmentedConsole.js"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 10" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+		<script src="mirror.js"></script>
+		<script type="module">
+import * as THREE from 'three';
+import '../src/THREE.AugmentedConsole.js';
+import { setRenderer } from '../src/THREE.AugmentedConsole.materials.js';
 
-		<script src="three.min.js"></script>
-		<script src="../src/THREE.AugmentedConsole.js"></script>
-		<script>
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
-			var scene = new THREE.Scene();
-			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+const renderer = new THREE.WebGLRenderer( { antialias: true } );
+renderer.setPixelRatio( window.devicePixelRatio );
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
 
-			var renderer = new THREE.WebGLRenderer( { antialias: true });
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement );
+renderer.setClearColor( 0x202020 );
+scene.fog = new THREE.Fog( 0x202020, 3, 12 );
 
-			var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-			var material = new THREE.MeshNormalMaterial();
-			var cube = new THREE.Mesh( geometry, material );
-			scene.add( cube );
+const loader = new THREE.TextureLoader();
+const map = loader.load( 'diffuse2.jpg' );
+map.colorSpace = THREE.SRGBColorSpace;
 
-			camera.position.z = 5;
+const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+const material = new THREE.MeshPhongMaterial( {
+	map,
+	normalMap: loader.load( 'normal2.jpg' ),
+	specularMap: loader.load( 'specular2.jpg' ),
+	color: 0xb70000,
+	specular: 0xffffff,
+	shininess: 10
+} );
+const cube = new THREE.Mesh( geometry, material );
+cube.name = 'cube';
+scene.add( cube );
 
-			var render = function () {
+scene.add( new THREE.HemisphereLight( 0xffffff, 0x444444, 1.5 ) );
 
-				requestAnimationFrame( render );
+const light = new THREE.DirectionalLight( 0xffffff, 2.5 );
+light.position.set( 2, 3, 4 );
+scene.add( light );
 
-				cube.rotation.x += 0.01;
-				cube.rotation.y += 0.011;
+camera.position.z = 5;
 
-				renderer.render(scene, camera);
+// a copy of the scene in a render target, and an animation, to have them to log
+const target = new THREE.WebGLRenderTarget( 512, 256, { type: THREE.HalfFloatType } );
+const clip = new THREE.AnimationClip( 'spin', 2, [ new THREE.NumberKeyframeTrack( '.rotation[y]', [ 0, 1, 2 ], [ 0, Math.PI, 2 * Math.PI ] ) ] );
 
-			};
+// the renderer that can read the render targets
+setRenderer( renderer );
 
-			render();
+const raycaster = new THREE.Raycaster();
+camera.updateMatrixWorld();
+raycaster.setFromCamera( new THREE.Vector2( 0, 0 ), camera );
 
-			window.addEventListener( 'resize', function() {
+// a module keeps its variables to itself, these are for the console
+const commands = { THREE, scene, camera, cube, light, raycaster, renderer, target, clip };
+Object.assign( window, commands );
 
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
+// what the library adds to the console is also shown in the page
+const output = document.getElementById( 'output' );
+mirror( output );
 
-				renderer.setSize( window.innerWidth, window.innerHeight );
+function render() {
 
-			} );
+	requestAnimationFrame( render );
 
-			[].forEach.call( document.querySelectorAll( 'code' ), function( c ) {
-				c.classList.add( 'clickable' );
-				c.addEventListener( 'click', function( e ) {
-					eval( c.textContent );
-					e.preventDefault();
-				} );
-			} );
+	cube.rotation.x += 0.01;
+	cube.rotation.y += 0.011;
 
+	renderer.setRenderTarget( target );
+	renderer.render( scene, camera );
+	renderer.setRenderTarget( null );
+
+	renderer.render( scene, camera );
+
+}
+
+render();
+
+window.addEventListener( 'resize', function () {
+
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+
+	renderer.setSize( window.innerWidth, window.innerHeight );
+
+} );
+
+document.querySelectorAll( '#about p.commands code' ).forEach( function ( c ) {
+
+	c.classList.add( 'clickable' );
+	c.addEventListener( 'click', function () {
+
+		// runs the line with the same names that the console has
+		output.replaceChildren();
+		output.appendChild( document.createElement( 'p' ) ).textContent = c.textContent;
+		new Function( ...Object.keys( commands ), c.textContent )( ...Object.values( commands ) );
+
+	} );
+
+} );
 		</script>
 	</body>
 </html>

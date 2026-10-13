@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>THREE.AugmentedConsole.js</title>
+	<meta name="description" content="Shows the vectors, matrices, objects and materials of three.js as tables and pictures when they are logged to the console">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="color-scheme" content="light dark">
+	<style>
+		:root{ --text: #24292f; --background: #ffffff; --link: #0969da; --border: #d0d7de; --muted: #57606a; --code: rgba( 175, 184, 193, .2 ); --pre: #f6f8fa; --comment: #6e7781; }
+		@media ( prefers-color-scheme: dark ) {
+			:root{ --text: #e6edf3; --background: #0d1117; --link: #58a6ff; --border: #30363d; --muted: #8b949e; --code: rgba( 110, 118, 129, .4 ); --pre: #161b22; --comment: #8b949e; }
+		}
+		*{ box-sizing: border-box; }
+		body{ margin: 0; padding: 32px 16px 64px; color: var( --text ); background-color: var( --background ); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.5; }
+		main{ max-width: 800px; margin: 0 auto; }
+		a{ color: var( --link ); text-decoration: none; }
+		a:hover{ text-decoration: underline; }
+		h1{ font-size: 2em; margin: 0 0 16px; padding-bottom: .3em; border-bottom: 1px solid var( --border ); }
+		h2{ font-size: 1.5em; margin: 40px 0 16px; padding-bottom: .3em; border-bottom: 1px solid var( --border ); }
+		h3{ font-size: 1.1em; margin: 28px 0 12px; }
+		p, ul{ margin: 0 0 16px; }
+		ul{ padding-left: 2em; }
+		li{ margin-bottom: 4px; }
+		.note{ color: var( --muted ); }
+		code{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 85%; padding: .2em .4em; border-radius: 6px; background-color: var( --code ); }
+		pre{ margin: 0 0 16px; padding: 16px; overflow: auto; border-radius: 6px; background-color: var( --pre ); font-size: 85%; line-height: 1.45; tab-size: 2; }
+		pre code{ padding: 0; background: none; font-size: 100%; }
+		pre .c{ color: var( --comment ); }
+		.buttons{ display: flex; flex-wrap: wrap; gap: 8px; }
+		.button{ display: inline-block; padding: 5px 16px; border: 1px solid var( --border ); border-radius: 6px; background-color: var( --pre ); color: var( --text ); font-size: 14px; font-weight: 500; }
+		.button:hover{ text-decoration: none; border-color: var( --muted ); }
+		.button.primary{ background-color: #1f883d; border-color: #1f883d; color: #fff; }
+
+		/* an example: the code, and under it what the library adds to the console */
+		pre.run{ margin-bottom: 0; border-radius: 6px 6px 0 0; }
+		.output{ margin: 0 0 16px; padding: 12px 16px 4px; border: 1px solid var( --border ); border-top: 0; border-radius: 0 0 6px 6px; background-color: #1b1b1b; color: #e8e8e8; overflow: hidden; }
+		.output:empty::before{ content: 'nothing is added'; opacity: .6; }
+	</style>
+	<script type="importmap">
+	{
+		"imports": {
+			"three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js"
+		}
+	}
+	</script>
+</head>
+<body>
+<main>
+
+	<h1>THREE.AugmentedConsole.js</h1>
+	<p>A small tool to make development with three.js easier. It augments <code>console.log</code>: when what you log is something of three.js, its contents are added after the line as a table, a color as a swatch, and a texture or a material as a picture.</p>
+	<p class="buttons">
+		<a class="button primary" href="examples/">Open the demo</a>
+		<a class="button" href="https://github.com/spite/THREE.AugmentedConsole.js">GitHub</a>
+	</p>
+	<p class="note">Every example in this page is running: under each piece of code there is what the library adds to the console for it. Open the console to see it there. The <a href="examples/">demo</a> has a scene and all the commands to click.</p>
+
+	<h2>How to use</h2>
+	<p>Import the module in your three.js project, and the console is augmented. It's a single file with no dependencies, not even three.js: <a href="https://github.com/spite/THREE.AugmentedConsole.js/blob/master/src/THREE.AugmentedConsole.js">src/THREE.AugmentedConsole.js</a>.</p>
+	<pre><code>import './THREE.AugmentedConsole.js';</code></pre>
+	<p>From then on, <code>console.log</code>, <code>console.info</code> and <code>console.debug</code> show more. The line is logged as you wrote it, and what the library adds comes after it. What it doesn't know is left as it is.</p>
+	<p>The things you log from the console of the browser have to be reachable from there. The variables of a module are not, so put the ones you want to inspect in <code>window</code>:</p>
+	<pre><code>Object.assign( window, { THREE, scene, camera } );</code></pre>
+
+	<h2>Vectors, matrices and friends</h2>
+	<p>The values of a vector, a quaternion or an euler, in a row.</p>
+	<pre class="run"><code>console.log( camera.position );</code></pre>
+	<pre class="run"><code>console.log( cube.rotation );</code></pre>
+	<p>A matrix, with its rows as rows. three.js stores them by columns, which is what makes them hard to read as they are.</p>
+	<pre class="run"><code>console.log( cube.matrixWorld );</code></pre>
+	<p>A color, with a swatch of it.</p>
+	<pre class="run"><code>console.log( cube.material.color );</code></pre>
+	<p>The things that are made of vectors have a row for each.</p>
+	<pre class="run"><code>console.log( 'box', new THREE.Box3().setFromObject( cube ) );</code></pre>
+	<pre class="run"><code>console.log( new THREE.Frustum().setFromProjectionMatrix( camera.projectionMatrix ) );</code></pre>
+	<p>A curve, a path or a shape shows what it is, and some points along it.</p>
+	<pre class="run"><code>console.log( new THREE.CatmullRomCurve3( [
+  new THREE.Vector3( - 1, 0, 0 ), new THREE.Vector3( 0, 1, 0 ), new THREE.Vector3( 1, 0, 0 )
+] ) );</code></pre>
+	<p>These are all the types of the math of three.js that are augmented:</p>
+	<ul>
+		<li>Vector2, Vector3, Vector4</li>
+		<li>Matrix2, Matrix3, Matrix4</li>
+		<li>Euler, Quaternion, Spherical, Cylindrical</li>
+		<li>Color</li>
+		<li>Ray, Plane, Line3, Triangle</li>
+		<li>Box2, Box3, Sphere, Frustum</li>
+		<li>SphericalHarmonics3, Layers</li>
+		<li>Raycaster</li>
+		<li>the curves, the paths and the shapes</li>
+	</ul>
+
+	<h2>Lists</h2>
+	<p>A list of things of the same type is one table, with a row for each.</p>
+	<pre class="run"><code>console.log( [ camera.position, cube.position, light.position ] );</code></pre>
+	<pre class="run"><code>console.log( [ new THREE.Color( 0xed6a5a ), new THREE.Color( 0xf4f1bb ), new THREE.Color( 0x9bc1bc ), new THREE.Color( 0x5ca4a9 ) ] );</code></pre>
+	<p>What a Raycaster returns is a list too: the distance, the object, the point and the face of each intersection.</p>
+	<pre class="run"><code>console.log( raycaster.intersectObjects( scene.children ) );</code></pre>
+	<p>A list with things of different types, or with something that is not supported, is left as it is.</p>
+
+	<h2>The objects of a scene</h2>
+	<p>An object shows what it is, and where: its position, rotation and scale, and its position in the world.</p>
+	<pre class="run"><code>console.log( cube );</code></pre>
+	<p>Cameras and lights add what defines them.</p>
+	<pre class="run"><code>console.log( camera );</code></pre>
+	<pre class="run"><code>console.log( light );</code></pre>
+	<p>An object that has others shows them, folded. Click it to see what is in this scene.</p>
+	<pre class="run"><code>console.log( scene );</code></pre>
+	<pre class="run"><code>console.log( scene.fog );</code></pre>
+	<p>A geometry shows its attributes, and an attribute its first items.</p>
+	<pre class="run"><code>console.log( cube.geometry );</code></pre>
+	<pre class="run"><code>console.log( cube.geometry.attributes.uv );</code></pre>
+	<p>A texture shows its picture, and its settings by their names instead of the numbers that they are.</p>
+	<pre class="run"><code>console.log( cube.material.map );</code></pre>
+	<p>A material shows a swatch of each of its colors, its values and the maps that it has.</p>
+	<pre class="run"><code>console.log( new THREE.MeshStandardMaterial( { color: 0xffb400, emissive: 0x301000, metalness: 1, roughness: .25 } ) );</code></pre>
+	<p>And the uniforms of a shader, the type and the value of each one. A ShaderMaterial shows its own.</p>
+	<pre class="run"><code>console.log( {
+  time: { value: 1.5 },
+  tint: { value: new THREE.Color( 0xfe5f55 ) },
+  offset: { value: new THREE.Vector2( .5, .25 ) },
+  map: { value: cube.material.map }
+} );</code></pre>
+	<p>The renderer shows how it is set up, and what the last frame took.</p>
+	<pre class="run"><code>console.log( renderer );</code></pre>
+	<p>Animations and skeletons are there too.</p>
+	<pre class="run"><code>console.log( clip );</code></pre>
+	<p>Nothing is computed or updated to show any of this. The position in the world is the one of the last time that the matrices were updated, and the bounds of a geometry are only there if something computed them.</p>
+	<p>All that is augmented from a scene:</p>
+	<ul>
+		<li>Object3D and everything that extends it: Mesh, Points, Line, Group, Scene, the cameras, the lights, the bones</li>
+		<li>Fog, FogExp2</li>
+		<li>BufferGeometry, BufferAttribute</li>
+		<li>Texture, with its picture when it has an image, a canvas, a video or RGBA data. A CubeTexture shows its six faces</li>
+		<li>the materials, and objects of uniforms</li>
+		<li>WebGLRenderTarget, WebGLRenderer</li>
+		<li>AnimationClip, AnimationMixer, Skeleton</li>
+	</ul>
+
+	<h2>Pictures of materials and render targets</h2>
+	<p>A second module adds pictures that need three.js to be made. Import it after the first one. It needs three.js r155 or later, as <code>three</code> in your import map or bundler.</p>
+	<pre><code>import './THREE.AugmentedConsole.js';
+import { setRenderer } from './THREE.AugmentedConsole.materials.js';</code></pre>
+	<p>With it, a material also shows a picture of a sphere that has it, as the material is at that moment. Change something, log it again, and see what it did.</p>
+	<pre class="run" data-pictures><code>console.log( cube.material );</code></pre>
+	<pre class="run" data-pictures><code>cube.material.shininess = 100;
+cube.material.color.set( 0x5ca4a9 );
+console.log( cube.material );</code></pre>
+	<p>The sphere is rendered in a small scene of its own, with a couple of lights and something to reflect, so it shows the material and not the lighting of your scene. A material that needs something that a sphere doesn't have, like vertex colors or custom attributes, won't look right.</p>
+	<p>A render target shows what it has, once the module has the renderer that can read it. It works for the targets that are RGBA, in bytes, half floats or floats, and the picture shows their linear values the way the screen would.</p>
+	<pre class="run" data-pictures><code>setRenderer( renderer );
+
+console.log( target );</code></pre>
+	<p><code>renderMaterial( material )</code> returns the picture of a material as a data URL, to use it somewhere else, and <code>dispose()</code> releases the renderer that makes them.</p>
+
+	<h2>Your own types</h2>
+	<p>To add a type, pass a function that tells if a value is of that type, and one that returns what <code>console.table</code> should show for it:</p>
+	<pre><code>import { addSupportedType } from './THREE.AugmentedConsole.js';
+
+addSupportedType(
+  v => v instanceof Particle,
+  v => ( { Particle: { x: v.x, y: v.y, age: v.age } } )
+);</code></pre>
+	<p>For something other than a table, <code>addHandler</code> takes the same test, and a function that is called with the value after it's logged. The ones added last go first, and one that returns <code>true</code> lets the next one that matches show the value too. <code>logImages( [ { url, width, height } ] )</code> logs pictures in a line, and <code>pictureOf( image )</code> makes one from an image, a canvas, a video or <code>{ data, width, height }</code>.</p>
+
+	<h2>Removing it</h2>
+	<p>It's a tool for development, not something to ship with your page. To stop augmenting the console, and to start again:</p>
+	<pre><code>import { install, uninstall } from './THREE.AugmentedConsole.js';
+
+uninstall();
+install();</code></pre>
+	<p>The lines logged through the library show the library as their source in the console. To see where your code logged them, add the file to the ignore list of the DevTools.</p>
+
+	<p class="note">Jaume Sanchez | <a href="https://www.clicktorelease.com">clicktorelease.com</a> | <a href="https://github.com/spite/THREE.AugmentedConsole.js">spite/THREE.AugmentedConsole.js</a></p>
+
+</main>
+<script src="examples/mirror.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import './src/THREE.AugmentedConsole.js';
+
+// the scene that the examples log
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog( 0x202020, 3, 12 );
+
+const camera = new THREE.PerspectiveCamera( 75, 16 / 9, 0.1, 1000 );
+camera.position.z = 5;
+
+const renderer = new THREE.WebGLRenderer( { antialias: true } );
+renderer.setSize( 320, 180 );
+renderer.setClearColor( 0x202020 );
+
+const loader = new THREE.TextureLoader();
+const [ map, normalMap, specularMap ] = await Promise.all( [ 'diffuse2.jpg', 'normal2.jpg', 'specular2.jpg' ].map( name => loader.loadAsync( 'examples/' + name ) ) );
+map.colorSpace = THREE.SRGBColorSpace;
+
+const cube = new THREE.Mesh( new THREE.BoxGeometry( 1, 1, 1 ), new THREE.MeshPhongMaterial( { map, normalMap, specularMap, color: 0xb70000, specular: 0xffffff, shininess: 10 } ) );
+cube.name = 'cube';
+cube.rotation.set( .5, .8, 0 );
+
+const lights = new THREE.Group();
+lights.name = 'lights';
+
+const light = new THREE.DirectionalLight( 0xffffff, 2.5 );
+light.position.set( 2, 3, 4 );
+lights.add( new THREE.HemisphereLight( 0xffffff, 0x444444, 1.5 ), light );
+
+scene.add( cube, lights );
+
+const target = new THREE.WebGLRenderTarget( 512, 288, { type: THREE.HalfFloatType } );
+const clip = new THREE.AnimationClip( 'spin', 2, [ new THREE.NumberKeyframeTrack( '.rotation[y]', [ 0, 1, 2 ], [ 0, Math.PI, 2 * Math.PI ] ) ] );
+
+camera.position.z = 2.2;
+renderer.setRenderTarget( target );
+renderer.render( scene, camera );
+renderer.setRenderTarget( null );
+camera.position.z = 5;
+renderer.render( scene, camera );
+
+const raycaster = new THREE.Raycaster();
+raycaster.setFromCamera( new THREE.Vector2( 0, 0 ), camera );
+
+const names = { THREE, scene, camera, cube, light, raycaster, renderer, target, clip };
+Object.assign( window, names );
+
+// runs every example, and shows under it what goes to the console
+function run( examples, extra = {} ) {
+
+	const scope = Object.assign( {}, names, extra );
+
+	for ( const example of examples ) {
+
+		const output = document.createElement( 'div' );
+		output.className = 'output';
+		example.after( output );
+
+		mirror( output, new Function( ...Object.keys( scope ), example.textContent ).bind( null, ...Object.values( scope ) ) );
+
+	}
+
+}
+
+run( document.querySelectorAll( 'pre.run:not( [data-pictures] )' ) );
+
+// the ones with pictures run with the second module, which changes what a material shows
+const { setRenderer } = await import( './src/THREE.AugmentedConsole.materials.js' );
+
+run( document.querySelectorAll( 'pre.run[data-pictures]' ), { setRenderer } );
+</script>
+</body>
+</html>
